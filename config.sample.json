@@ -1,0 +1,31 @@
+{
+    "version": "1.12.2",
+    "viewDistance": 8,
+    "takeBySlot": false,
+    "login": {
+        "gapTicks": 60,
+        "sequence": [
+            "/login password",
+            "/res tp somewhere"
+        ]
+    },
+    "reset": {
+        "backToIdlePosition": true,
+        "gapTicks": 60,
+        "sequence": [
+            "/spawn",
+            "/res tp somewhere"
+        ]
+    },
+    "watchdog": {
+        "timeout": 45000,
+        "resetAction": "quit"
+    },
+    "chatControl": {
+        "allowOwnersOnly": true,
+        "owners": ["Steve", "Alex"],
+        "whisperRegexPatterns": []
+    },
+    "defaultChatPatterns": true,
+    "logChats": false
+}

@@ -1,0 +1,19 @@
+{
+    "schematicFile": "painting.schematic",
+    "build": {
+        "startFrom": [100, 20, 100],
+        "startZ": 0,
+        "sequence": [
+            "I'm back to building!"
+        ],
+        "gapTicks": 60
+    },
+    "storage": {
+        "min": [-3, 4, -3],
+        "max": [3, 6, 3],
+        "sequence": [
+            "I'm taking blocks!"
+        ],
+        "gapTicks": 60
+    }
+}
