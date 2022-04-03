@@ -18,7 +18,7 @@ function makePrinter(host, port, username, password, config, task) {
         viewDistance: config.viewDistance ?? 6,
         defaultChatPatterns: config.defaultChatPatterns,
     });
-    addChatControl(bot, config);
+    addChatControl(bot, config.chatControl);
     bot.loadPlugin(pathfinder);
 
     bot.once('spawn', async () => {
