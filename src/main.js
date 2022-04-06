@@ -17,6 +17,15 @@ let bot = printer.makePrinter(host, port, name, password, config, task);
 if (!bot) {
     process.exit(1);
 }
+if (task.autosave) {
+    bot.printer.autosave = async function() {
+        const fsp = require('fs').promises;
+        const task = bot.printer.task;
+        const content = JSON.stringify(task, null, 4);
+        await fsp.writeFile(process.argv[3], content);
+        console.log(`Autosaved, startZ ${task.build.startZ}`);
+    }
+}
 bot.on('kicked', (reason, loggedIn) => {
     console.log("Kicked:", reason);
     process.exit(0);

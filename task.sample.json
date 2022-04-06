@@ -1,5 +1,6 @@
 {
     "schematicFile": "painting.schematic",
+    "autosave": false,
     "build": {
         "startFrom": [100, 20, 100],
         "startZ": 0,

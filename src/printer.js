@@ -20,6 +20,12 @@ function makePrinter(host, port, username, password, config, task) {
     });
     addChatControl(bot, config.chatControl);
     bot.loadPlugin(pathfinder);
+    bot.printer = {
+        task: task,
+        workloop: async () => { await printerWorkloop(bot) },
+        config: config,
+        autosave: async () => undefined
+    };
 
     bot.once('spawn', async () => {
         console.log("first spawn");
@@ -31,13 +37,8 @@ function makePrinter(host, port, username, password, config, task) {
         defaultMove.allowSprinting = true;
         bot.pathfinder.setMovements(defaultMove);
         bot.mcData = mcData;
-        
-        bot.printer = {
-            task: task,
-            workloop: async () => { await printerWorkloop(bot) },
-            config: config,
-        };
-        task.schematic = await Schematic.read(await fs.readFile(task.schematicFile)); 
+
+        bot.printer.schematic = await Schematic.read(await fs.readFile(task.schematicFile)); 
 
         await bot.waitForTicks(10);
         for (let i in config.login.sequence) {
@@ -54,7 +55,7 @@ function makePrinter(host, port, username, password, config, task) {
 
 async function printerWorkloop(bot) {
     const taskConf = bot.printer.task;
-    const schematic = taskConf.schematic;
+    const schematic = bot.printer.schematic;
     const startVec = schematic.start();
     const stopVec = schematic.end();
 
@@ -98,6 +99,8 @@ async function printerWorkloop(bot) {
             continue;
         }
         console.log("Z Row " + z + " complete!");
+        taskConf.build.startZ = z+1;
+        await bot.printer.autosave();
     }
 }
 
@@ -106,7 +109,7 @@ async function placeBlockForZRow(bot, z) {
     const faceVector = new Vec3(0, 0, 1);
 
     const buildConf = bot.printer.task.build;
-    const schematic = bot.printer.task.schematic;
+    const schematic = bot.printer.schematic;
     const worldStartPos = new Vec3(buildConf.startFrom);
     // always 0, 0, 0
     const startVec = schematic.start();
