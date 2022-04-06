@@ -44,6 +44,9 @@ function makePrinter(host, port, username, password, config, task) {
             bot.chat(config.login.sequence[i]);
             await bot.waitForTicks(config.login.gapTicks);
         }
+        if (config.autostart) {
+            printerWorkloop(bot);
+        }
     });
     return bot;
 }
@@ -67,7 +70,7 @@ async function printerWorkloop(bot) {
                 await bot.waitForTicks(taskConf.storage.gapTicks);
             }
             console.log("Taking materials...");
-            while (!maUtil.materialListComplete(materialList)) {
+            if (!maUtil.materialListComplete(materialList)) {
                 if (!bot.printer.working) break;
                 await maUtil.searchForMaterials(bot, materialList, storageStart, storageEnd);
                 await bot.waitForTicks(100);
@@ -115,7 +118,7 @@ async function placeBlockForZRow(bot, z) {
         let schematicBlock = schematic.getBlock(schematicPos);
         let worldPos = schematicPos.minus(startVec).plus(worldStartPos);
         let standingPos = worldPos.plus(standingOffset);
-        let goal = new GoalNearXYZ(worldPos.x, worldPos.y, worldPos.z, 3.0, 1.0, 1.0);
+        let goal = new GoalNearXYZ(worldPos.x, worldPos.y, worldPos.z, 1.0, 1.0, 1.0);
         //let goal = new GoalBlock(standingPos.x, standingPos.y, standingPos.z);
         await bot.pathfinder.goto(goal);
         let block = bot.blockAt(worldPos);
@@ -123,8 +126,17 @@ async function placeBlockForZRow(bot, z) {
             // TODO: remove block.name === item.name assumption
             let success = await equipLeast(bot, schematicBlock.name);
             if (!success) return false;
-            //await bot.waitForTicks(2);
-            await bot.placeBlock(bot.blockAt(worldPos.minus(faceVector)), faceVector);
+            for (let i=0;i<50 && bot.blockAt(worldPos).name !== schematicBlock.name; i++) {
+                try {
+                    await bot.waitForTicks(4);
+                    await bot.placeBlock(bot.blockAt(worldPos.minus(faceVector)), faceVector);
+                } catch (e) {
+                    console.log(e);
+                }
+            }
+            if (bot.blockAt(worldPos).name.endsWith("air")) {
+                await bot.placeBlock(bot.blockAt(worldPos.minus(faceVector)), faceVector);
+            }
         }
     }
     return true;

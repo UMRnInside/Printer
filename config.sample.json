@@ -1,7 +1,8 @@
 {
     "version": "1.14.4",
     "viewDistance": 8,
-    "takeBySlot": false,
+    "withdrawBySlot": false,
+    "autostart": false,
     "login": {
         "gapTicks": 60,
         "sequence": [

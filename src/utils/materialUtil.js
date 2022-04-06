@@ -41,7 +41,7 @@ async function withdrawMaterials(bot, materialList, container, withdrawBySlot) {
             await container.withdraw(slots[i].type, null, takingCount, null);
             console.log(`Withdrew ${takingCount} x ${itemName}`);
         }
-        await sleep(200);
+        await sleep(500);
         materialList[itemName] -= takingCount;
     }
 }
@@ -62,16 +62,23 @@ async function searchForMaterials(bot, materialList, startVec, stopVec) {
         for (let x=startVec.x; x<=stopVec.x; x++) {
             for (let z=startVec.z; z<=stopVec.z; z++) {
                 let block = bot.blockAt(new Vec3(x, y, z));
-                let blockName = block.name;
+                let blockName = block?.name ?? "";
                 if (!blockName.endsWith("chest") && !blockName.endsWith("shulker_box")) {
                     continue;
                 }
                 let goal = new GoalGetToBlock(x, y, z);
                 await bot.pathfinder.goto(goal);
+                await sleep(250);
                 let withdrawOption = bot.printer?.config?.withdrawBySlot;
-                let container = await bot.openContainer(block);
+                let container = null;
+                setTimeout(() => {
+                    if (!container) {
+                        bot.activateBlock(block)
+                    }
+                }, 5000);
+                container = await bot.openContainer(block);
                 await withdrawMaterials(bot, materialList, container, withdrawOption);
-                await sleep(200);
+                await sleep(250);
                 container.close();
                 if (materialListComplete(materialList)) {
                     return true;
