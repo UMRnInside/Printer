@@ -45,6 +45,7 @@ function makePrinter(host, port, username, password, config, task) {
             await bot.waitForTicks(config.login.gapTicks);
         }
         if (config.autostart) {
+            bot.printer.working = true;
             printerWorkloop(bot);
         }
     });
