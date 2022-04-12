@@ -35,6 +35,7 @@ function makePrinter(host, port, username, password, config, task) {
         defaultMove.canDig = false;
         defaultMove.allowParkour = true;
         defaultMove.allowSprinting = true;
+        defaultMove.scafoldingBlocks = [];
         bot.pathfinder.setMovements(defaultMove);
         bot.mcData = mcData;
 
