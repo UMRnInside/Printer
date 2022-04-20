@@ -130,10 +130,13 @@ async function placeBlockForZRow(bot, z) {
         if (block.name.endsWith("air")) {
             // TODO: remove block.name === item.name assumption
             let success = await equipLeast(bot, schematicBlock.name);
-            if (!success) return false;
+            if (!success) {
+                console.log("Failed to equip", schematicBlock.name);
+                return false;
+            }
             for (let i=0;i<50 && bot.blockAt(worldPos).name !== schematicBlock.name; i++) {
                 try {
-                    await bot.waitForTicks(4);
+                    await bot.waitForTicks(1);
                     await bot.placeBlock(bot.blockAt(worldPos.minus(faceVector)), faceVector);
                 } catch (e) {
                     console.log(e);

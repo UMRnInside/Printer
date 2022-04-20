@@ -9,7 +9,7 @@ async function main () {
     r.context.painting = schematic;
     r.context.Schematic = Schematic;
     r.context.Vec3 = Vec3;
-    r.context.mautil = require('./src/utils/materialUril');
+    r.context.mautil = require('./src/utils/materialUtil');
 }
 
 main()
